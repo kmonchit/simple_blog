@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+from multiprocessing import context
+from django.shortcuts import get_object_or_404, render, redirect
 
 from blog.models import BlogPost
 from blog.forms import CreateBlogPostForm
@@ -24,3 +25,11 @@ def create_blog_view(request):
     context['form'] = form
 
     return render(request, "blog/create_blog.html", {})
+
+def detail_blog_view(request, slug):
+    context = {}
+
+    blog_post = get_object_or_404(BlogPost, slug=slug)
+    context['blog_post'] = blog_post
+
+    return render(request, 'blog/detail_blog.html', context)
