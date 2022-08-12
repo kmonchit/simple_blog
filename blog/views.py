@@ -1,6 +1,7 @@
 from multiprocessing import context
 from django.shortcuts import get_object_or_404, render, redirect
 from django.db.models import Q
+from django.http import HttpResponse
 
 from blog.models import BlogPost
 from blog.forms import CreateBlogPostForm, UpdateBlogPostForm
@@ -44,6 +45,10 @@ def edit_blog_view(request, slug):
         return redirect('must_authenticate')
 
     blog_post = get_object_or_404(BlogPost, slug=slug)
+
+    if blog_post.author != user:
+        return HttpResponse("You are not the author of the post.")
+
     if request.POST:
         form = UpdateBlogPostForm(request.POST or None, request.FILES or None, instance=blog_post)
         if form.is_valid():
